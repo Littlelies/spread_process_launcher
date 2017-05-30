@@ -1,0 +1,17 @@
+{application, spread_process_launcher,
+ [{description, "An OTP application"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {mod, { spread_process_launcher_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+    spread
+   ]},
+  {env,[]},
+  {modules, []},
+
+  {maintainers, []},
+  {licenses, []},
+  {links, []}
+ ]}.
