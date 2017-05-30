@@ -5,7 +5,7 @@ Use Spread to launch native processes and orchestrate them.
 
 Usage
 =====
-Launch `curl http://www.google.com` in `machineA` (we removed auth params for the sake of readibility)
+Launch `curl http://www.google.com` in `nonode@nohost` (we removed auth params for the sake of readibility)
 ```
 curl http://localhost:8080/raw/Process%20launcher/nonode@nohost/curl_google/command --data "curl http://www.google.com 2>&1"
 ```
@@ -15,17 +15,11 @@ curl http://localhost:8080/sse/Process%20launcher/nonode@nohost/curl_google
 ```
 Sample output:
 ```
-id: 1496155526493380
-data: Process launcher/nonode%40nohost/curl_google
+id: 1496155526493381
+data: Process launcher/nonode%40nohost/curl_google/command
 data: nonode@nohost
-data: 1496155620483015
+data: 1496155680561870
 data: curl http://www.google.com 2>&1
-
-id: 1496155526493384
-data: Process launcher/nonode%40nohost/curl_google/status
-data: nonode@nohost
-data: 1496155680653314
-data: {"ref":1496155680561870,"status":"done","time":1496155680647,"exit_status":0}
 
 id: 1496155526493383
 data: Process launcher/nonode%40nohost/curl_google/latest_logs
@@ -41,10 +35,10 @@ data: 1496155680629   % Total    % Received % Xferd  Average Speed   Time    Tim
 1496155680646 <A HREF="http://www.google.fr/?gfe_rd=cr&amp;ei=IIYtWYqfJ4bBaNjEhMgN">here</A>.
 1496155680646 </BODY></HTML>
 
-
-id: 1496155526493381
-data: Process launcher/nonode%40nohost/curl_google/command
+id: 1496155526493384
+data: Process launcher/nonode%40nohost/curl_google/status
 data: nonode@nohost
-data: 1496155680561870
-data: curl http://www.google.com 2>&1
+data: 1496155680653314
+data: {"ref":1496155680561870,"status":"done","time":1496155680647,"exit_status":0}
+
 ```
