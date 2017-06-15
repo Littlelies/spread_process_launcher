@@ -143,13 +143,20 @@ handle_info({Port, post_lines}, State) ->
     {noreply, State};
 handle_info({Port, {exit_status, ExitStatus}}, State) ->
     Key = ?PROCESS_KEY_FROM_PORT(Port),
-    Process = erase(Key),
     Now = erlang:system_time(millisecond),
+    Process = erase(Key),
     flush_log_lines(Process, State),
     ProcessId = Process#process.id,
     RefId = Process#process.ref,
     lager:info("Port ~p ended ~p", [Process, ExitStatus]),
-    spread:post([?PEERS_ROOT_PATH, ?SELF, ProcessId, ?STATUS_PATH], jsx:encode([{?REF, RefId}, {?STATUS, ?DONE}, {?TIME, Now}, {?EXIT_STATUS, ExitStatus}])),
+
+    {_Iteration, _From, Status} = spread:get([?PEERS_ROOT_PATH, ?SELF, ProcessId, ?STATUS_PATH]),
+    case get_refid_from_status(Status) of
+        RefId ->
+            spread:post([?PEERS_ROOT_PATH, ?SELF, ProcessId, ?STATUS_PATH], jsx:encode([{?REF, RefId}, {?STATUS, ?DONE}, {?TIME, Now}, {?EXIT_STATUS, ExitStatus}]));
+        _ ->
+            lager:info("Process has been replaced already, ignoring our kill exit")
+    end,
     {noreply, State};
 handle_info(_Info, State) ->
     {noreply, State}.
@@ -169,7 +176,10 @@ start_process(Command) ->
     {Port, to_gpid(OsPid)}.
 
 kill_process(Pid) ->
-    os:cmd("kill -- -" ++ binary_to_list(Pid)).
+    lager:info("Killing ~p", [Pid]),
+    PidAsList = binary_to_list(Pid),
+    os:cmd("while ps -p " ++ PidAsList ++ "; do kill -- -" ++ PidAsList ++ "; sleep 1; done;"),
+    lager:info("Killed ~p", [Pid]).
 
 to_gpid(Pid) ->
     [GPid | _] = re:split(os:cmd("ps -o pgid= " ++ integer_to_list(Pid) ++ " | grep -o [0-9]*"), "\n", [{return, binary}]),
