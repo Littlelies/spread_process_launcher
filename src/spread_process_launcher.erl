@@ -93,6 +93,7 @@ handle_info({update, [?PEERS_ROOT_PATH, Self, CommandId, ?COMMAND_PATH], _Timest
                     no_process_yet
             end
     end,
+    lager:info("Current state was ~p", [CurrentState]),
     case CurrentState of
         no_process_yet ->
             {Port, Pid} = start_process(Command),
