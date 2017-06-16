@@ -29,7 +29,8 @@ start_link() ->
 %% Child :: {Id,StartFunc,Restart,Shutdown,Type,Modules}
 init([]) ->
     ProcessLauncher = {spread_process_launcher, {spread_process_launcher, start_link, []}, permanent, 5000, worker, [spread_process_launcher]},
-    {ok, { {one_for_one, 5, 1}, [ProcessLauncher]} }.
+    TimeLimitedProcessLauncher = {spread_time_limited_process_launcher, {spread_time_limited_process_launcher, start_link, []}, permanent, 5000, worker, [spread_time_limited_process_launcher]},
+    {ok, { {one_for_one, 5, 1}, [ProcessLauncher, TimeLimitedProcessLauncher]} }.
 
 %%====================================================================
 %% Internal functions

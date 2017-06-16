@@ -1,5 +1,5 @@
 {application, spread_process_launcher,
- [{description, "An OTP application"},
+ [{description, "Ability to launch/stop local native processes from Spreadbot"},
   {vsn, "0.1.0"},
   {registered, []},
   {mod, { spread_process_launcher_app, []}},
@@ -9,7 +9,7 @@
     spread
    ]},
   {env,[]},
-  {modules, []},
+  {modules, [spread_time_limited_process_launcher]},
 
   {maintainers, []},
   {licenses, []},
