@@ -62,7 +62,7 @@ handle_info({update, [?PEERS_ROOT_PATH, Self, JobId], Timestamp, Event}, State) 
                             spread:post([<<"Process launcher">>, Self, <<(?PEERS_ROOT_PATH)/binary, "_", JobId/binary>>, <<"command">>], Command);
                         {TimerRef, Command} ->
                             lager:debug("Setting new validity in ~p sec. to ~p", [Rest, Command]),
-                            erlang:cancel_timer(TimerRef),
+                            erlang:cancel_timer(TimerRef)
                     end,
                     NewTimerRef = erlang:send_after(Rest * 1000, self(), {check_validity, JobId, Timestamp}),
                     put({job, JobId}, {NewTimerRef, Command});
@@ -71,12 +71,12 @@ handle_info({update, [?PEERS_ROOT_PATH, Self, JobId], Timestamp, Event}, State) 
             end
     catch
         _:_ ->
-            lager:error("Invalid JSON for channel ~p", [ChannelId])
+            lager:error("Invalid JSON for job ~p", [JobId])
     end,
     {noreply, State};
 handle_info({check_validity, JobId, Timestamp}, State) ->
     Self = State#state.self,
-    case spread:get([?PEERS_ROOT_PATH, Self, ChannelId]) of
+    case spread:get([?PEERS_ROOT_PATH, Self, JobId]) of
         {Timestamp, _From, _Value} ->
             lager:info("Killing process since validity expired"),
             stop_current_job(JobId, Self);
