@@ -109,7 +109,7 @@ handle_info({update, [?PEERS_ROOT_PATH, Self, CommandId, ?COMMAND_PATH], _Timest
 handle_info({Port, {data, {MaybeEol, Data}}}, State) ->
     Key = ?PROCESS_KEY_FROM_PORT(Port),
     Process = get(Key),
-    lager:info("Got ~p", [Data]),
+    lager:info("Got ~p: ~p", [Process#process.id, Data]),
     NewProcess = case MaybeEol of
         eol ->
             TimerRef = case Process#process.data_timer of
